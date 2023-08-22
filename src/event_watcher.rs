@@ -24,6 +24,7 @@ pub fn watch_folder_trigger<P: AsRef<Path>>(path: P) -> Result<String> {
                     println!("Create event: {:?}", &path);
                 }
                 else if event.kind.is_access() {
+                    println!("{:?}", event);
                     break;
                 }
             },
