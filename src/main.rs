@@ -1,4 +1,4 @@
-use std::error::Error;
+use std::{error::Error, env};
 use dotenv::dotenv;
 
 mod txt_writer;
@@ -24,11 +24,10 @@ fn main() -> Result<(), Box<dyn Error>> {
     
     let mut i = 0;
 
-    println!("Watching {}", path);
-
     loop {
         let event_path = event_watcher::watch_folder_trigger(&path)?;
 
+        println!("Watching {}", &path);
         let output = read_file(&event_path)?;
         println!("{:?}", output);
 
@@ -96,7 +95,16 @@ fn convert_file(template_path: &str, output_path: &str, values: (Vec<(String, St
 fn get_file_name(path: &str) -> Result<String, Box<dyn Error>> {
     let mut file: String = String::new();
     let mut file_name: String = String::new();
-    let split_path = path.split("/");
+    
+    let split_path = if env::consts::OS == "linux" {
+        path.split("/")
+    } 
+    else if env::consts::OS == "windows" {
+        path.split("\\")
+    }
+    else {
+        panic!("Unsupported OS!")
+    };
 
     for spl in split_path {
         file = spl.to_string();

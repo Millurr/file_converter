@@ -14,14 +14,16 @@ pub fn watch_folder_trigger<P: AsRef<Path>>(path: P) -> Result<String> {
     for res in rx {
         match res {
             Ok(event) => {
-                
+                println!("{:?}", event);
                 path = String::from(event.paths[0].to_string_lossy());
 
                 if event.kind.is_modify() {
                     println!("Modify event: {:?}", &path);
+                    break;
                 }
                 else if event.kind.is_create() {
                     println!("Create event: {:?}", &path);
+                    break;
                 }
                 else if event.kind.is_access() {
                     println!("{:?}", event);
